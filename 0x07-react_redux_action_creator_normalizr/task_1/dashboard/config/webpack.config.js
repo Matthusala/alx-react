@@ -1,58 +1,49 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require("clean-webpack-plugin")
+const HtmlWebpackPlugin = require("html-webpack-plugin")
+const path = require("path")
 
+/** @type {import('webpack').Configuration} */
 module.exports = {
-	entry: './src/index.js',
-	output: {
-		filename: 'bundle.js',
-	},
-	mode: 'development',
-	module: {
-		rules: [
-			{
-				test: /\.css$/i,
-				use: ['style-loader', 'css-loader'],
-			},
-			{
-				test: /\.(png|svg|jpg|jpeg|gif)$/i,
-				// type: 'asset/resource',
-				use: [
-					'file-loader',
-					{
-						loader: 'image-webpack-loader',
-						options: {
-							bypassOnDebug: true, // webpack@1.x
-							disable: true, // webpack@2.x and newer
-						},
-					},
-				],
-			},
-			{
-				test: /\.(js|jsx)$/,
-				exclude: /node_modules/,
-				use: ['babel-loader'],
-			},
-		],
-	},
-	resolve: {
-		alias: {
-			'react-dom': 'react-dom/profiling',
-			'schedule/tracing': 'schedule/tracing-profiling',
-		},
-	},
-	devServer: {
-		contentBase: './dist',
-		compress: true,
-		open: true,
-		hot: true,
-		port: 8564,
-	},
-	devtool: 'inline-source-map',
-	plugins: [
-		new HtmlWebpackPlugin({
-			name: 'index.html',
-			inject: false,
-			template: './dist/index.html',
-		}),
-	],
-};
+    entry: "./src/index.js",
+    output: {
+        path: path.resolve(__dirname, "dist"),
+        filename: "bundle.js",
+    },
+    devServer: {
+        hot: true,
+        contentBase: path.resolve("./dist"),
+        compress: true,
+        port: 8564,
+    },
+    mode: 'development',
+    module: {
+        rules: [
+            {
+                use: "babel-loader",
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/
+            },
+            {
+                use: ["style-loader", "css-loader"],
+                test: /\.css$/i
+            },
+            {
+                test: /\.(gif|png|jpe?g|svg)$/i,
+                use: [
+                    "file-loader",
+                    {
+                        loader: "image-webpack-loader",
+                        options: {
+                            bypassOnDebug: true, // webpack@1.x
+                            disable: true, // webpack@2.x and newer
+                        },
+                    },
+                ],
+            }
+        ]
+    },
+    resolve: {
+        extensions: [".js", ".jsx", ".json"]
+    },
+    devtool: "inline-source-map",
+}

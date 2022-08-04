@@ -1,61 +1,61 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { StyleSheet, css } from 'aphrodite';
+import React from "react";
+import PropTypes from "prop-types";
+import { css, StyleSheet } from 'aphrodite';
 
-const rowStyle = { color: '#f5f5f5ab' };
-const headerStyle = { color: '#deb5b545' };
+const styles = StyleSheet.create({
+  rowStyle: {
+    backgroundColor: '#f5f5f5ab'
+  },
+  headerStyle: {
+    backgroundColor: '#deb5b545'
+  },
+  text: {
+    textAlign: 'center',
+    border: '1px solid lightgray'
+  },
+  rowChecked: {
+    backgroundColor: '#e6e4e4'
+  }
+})
 
-const CourseListRow = ({
-	isHeader = false,
-	textFirstCell,
-	textSecondCell = null,
-}) => {
-	const [checked, setChecked] = useState(false);
-	const handleChecked = () => setChecked(!checked);
-	return (
-		<tr style={isHeader ? headerStyle : rowStyle}>
-			{isHeader ? (
-				textSecondCell ? (
-					<>
-						<th className={css(styles.cell)}>{textFirstCell}</th>
-						<th className={css(styles.cell)}>{textSecondCell}</th>
-					</>
-				) : (
-					<th colSpan={2}>{textFirstCell}</th>
-				)
-			) : (
-				<>
-					<td
-						className={
-							checked ? css(styles.cell, styles.rowChecked) : css(styles.cell)
-						}
-					>
-						<input
-							type='checkbox'
-							onChange={handleChecked}
-							defaultChecked={checked}
-						/>
-						{textFirstCell}
-					</td>
-					<td className={css(styles.cell)}>{textSecondCell}</td>
-				</>
-			)}
-		</tr>
-	);
+export default function CourseListRow({
+  isHeader,
+  textFirstCell,
+  textSecondCell,
+}) {
+
+  if (isHeader) {
+    if (textSecondCell === null) {
+      return (
+        <tr className={css(styles.headerStyle)}>
+          <th colSpan="2" className={css(styles.text)}>{textFirstCell}</th>
+        </tr>
+      );
+    } else {
+      return (
+        <tr className={css(styles.headerStyle)}>
+          <th className={css(styles.text)}>{textFirstCell}</th>
+          <th className={css(styles.text)}>{textSecondCell}</th>
+        </tr>
+      );
+    }
+  } else {
+    return (
+      <tr className={css(styles.rowStyle)}>
+        <td className={css(styles.text)}>{textFirstCell}</td>
+        <td className={css(styles.text)}>{textSecondCell}</td>
+      </tr>
+    );
+  }
+}
+
+CourseListRow.defaultProps = {
+  isHeader: false,
+  textSecondCell: null,
 };
 
 CourseListRow.propTypes = {
-	isHeader: PropTypes.bool,
-	textFirstCell: PropTypes.string.isRequired,
-	textSecondCell: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  isHeader: PropTypes.bool,
+  textFirstCell: PropTypes.string.isRequired,
+  textSecondCell: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) 
 };
-
-const styles = StyleSheet.create({
-	cell: {
-		border: '1px solid #ddd',
-		width: '80%',
-	},
-	rowChecked: { backgroundColor: '#e6e4e4' },
-});
-
-export default CourseListRow;

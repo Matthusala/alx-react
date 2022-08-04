@@ -1,52 +1,36 @@
 /**
  * @jest-environment jsdom
- */
-import React from 'react';
-import Footer from './Footer';
-import { getFullYear, getFooterCopy } from '../utils/utils';
-import { shallow, mount } from 'enzyme';
+*/
+
+import React from "react";
+import { shallow, mount } from "enzyme";
+import Footer from "./Footer";
+import { StyleSheetTestUtils } from 'aphrodite';
 import { AppContext } from '../App/AppContext';
 
-describe('rendering components', () => {
-	it('renders Footer component without crashing', () => {
-		const wrapper = shallow(<Footer />);
 
-		expect(wrapper.exists()).toBe(true);
+StyleSheetTestUtils.suppressStyleInjection();
+
+describe('<Footer />', () => {
+  it('render a Footer component without crashing', () => {
+    const wrapper = shallow(<Footer />);
+    expect(wrapper).toHaveLength(1);
 	});
 
-	it('Footer component renders "Copyright ${getFullYear()} - ${getFooterCopy(true)}"', () => {
-		const wrapper = mount(<Footer />);
+  // it("Verify that the components renders the text  Copyright", () => {
+  //   const wrapper = shallow(<Footer />);
+  //   expect(wrapper.find(".footer p")).toHaveLength(1);
+  //   expect(wrapper.find(".footer p").text()).toContain("Copyright");
+  // });
 
-		expect(wrapper.find('.footer').text()).toEqual(
-			`Copyright ${getFullYear()} - ${getFooterCopy(true)}`
-		);
+  it('verify that the link is not displayed when the user is logged out within the context', () => {
+    const wrapper = mount(<Footer />);
+    expect(wrapper.find('footer p').length).toBe(1);
 	});
 
-	it('only renders link when user is logged in', () => {
-		const testData = {
-			user: { email: 'fred@gmail.com', password: 'pass123', isLoggedIn: true },
-			logOut: () => {},
-		};
-		const wrapper = mount(
-			<AppContext.Provider value={testData}>
-				<Footer />
-			</AppContext.Provider>
-		);
-
-		expect(wrapper.find('.footer a').exists()).toBe(true);
-	});
-
-	it('does not render link when user is logged out', () => {
-		const testData = {
-			user: { email: 'fred@gmail.com', password: 'pass123', isLoggedIn: false },
-			logOut: () => {},
-		};
-		const wrapper = mount(
-			<AppContext.Provider value={testData}>
-				<Footer />
-			</AppContext.Provider>
-		);
-
-		expect(wrapper.find('.footer a').exists()).toBe(false);
+  it('verify that the link is displayed when the user is logged in within the context', () => {
+    const value = { user: { email: 'thedude@aim.com', password: 'thedudeabides', isLoggedIn: true }, logOut: () => { } }
+    const wrapper = mount(<AppContext.Provider value={value}><Footer /></AppContext.Provider>);
+    expect(wrapper.find('footer a').text()).toContain('Contact us');
 	});
 });

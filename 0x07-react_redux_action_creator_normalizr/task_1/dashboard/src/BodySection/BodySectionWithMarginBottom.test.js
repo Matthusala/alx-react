@@ -1,32 +1,22 @@
 import React from 'react';
-import { StyleSheetTestUtils } from 'aphrodite';
 import { shallow } from 'enzyme';
+import BodySectionWithMarginBottom from './BodySectionWithMarginBottom';
 import BodySection from './BodySection';
-import BodySectionWithMarginBottom from './BodySectionWithMarginBottom'
+import { StyleSheetTestUtils } from 'aphrodite';
 
-beforeEach(() => {
-  StyleSheetTestUtils.suppressStyleInjection();
+StyleSheetTestUtils.suppressStyleInjection();
+
+
+describe('<BodySectionWithMarginBottom />', () => {
+  it('renders a <BodySectionWithMarginBottom /> component', () => {
+		const wrapper = shallow(
+			<BodySectionWithMarginBottom title="test title">
+				<p>test children node</p>
+			</BodySectionWithMarginBottom>
+		);
+		expect(wrapper.find(BodySection).length).toEqual(1);
+		expect(wrapper.find(BodySection).props().title).toEqual('test title');
+		expect(wrapper.find(BodySection).props().children.type).toEqual('p');
+		expect(wrapper.find(BodySection).props().children.props.children).toEqual('test children node');
+	});
 });
-
-afterEach(() => {
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
-
-describe('<BodySection />', () => {
-  it('renders a BodySection component', () => {
-    const wrapper = shallow(
-      <BodySectionWithMarginBottom >
-        <p>test children node</p>
-      </BodySectionWithMarginBottom>
-    );
-
-    expect(wrapper.find(BodySection)).toHaveLength(1);
-    expect(wrapper.find('p')).toHaveLength(1);
-    expect(wrapper.find('p').text()).toBe('test children node');
-
-    // let containerStyle = wrapper.get(0).style;
-    // expect(containerStyle).toHaveProperty('margin-bottom', '40px');
-    // expect(wrapper.find('.bodySectionWithMargin')).toHaveProperty('margin-bottom', '40px');
-    // expect(wrapper.find('.bodySectionWithMargin')).toBeDefined();
-  });
-})
